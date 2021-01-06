@@ -20,11 +20,11 @@ module.exports = {
         "react",
         "@typescript-eslint"
     ],
-    "rules": {
+    rules: {
+      'no-underscore-dangle': ['error', {
+        allow: ['_id'],
+      }],
+      'no-console': 'off',
     },
-    "allow":
-     [
-      "foo_",
-      "_bar"
-     ]
-};
+  }
+

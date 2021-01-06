@@ -7,7 +7,7 @@ const getUsers = (req, res) => {
       res.send(users);
     })
     .catch(err => {
-      res.status(500).send(err);
+      res.status(500).send({err});
     })
 };
 
@@ -22,7 +22,7 @@ const getUser = (req, res) => {
       res.send(user);
     })
     .catch(err => {
-      res.status(500).send(err);
+      res.status(500).send({err});
     })
 };
 

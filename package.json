@@ -5,17 +5,24 @@
   "main": "index.js",
   "scripts": {
     "start": "node app.js",
-    "dev": "nodemon app.js"
+    "dev": "nodemon app.js",
+    "lint": "eslint ./public"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "eslint-config-airbnb-base": "^14.2.1",
-    "eslint-plugin-import": "^2.22.1",
     "express": "^4.17.1"
   },
   "devDependencies": {
     "eslint": "^7.17.0",
-    "nodemon": "^2.0.6"
+    "eslint-config-airbnb": "^18.2.1",
+    "eslint-config-prettier": "^7.1.0",
+    "eslint-plugin-html": "^6.1.1",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-prettier": "^3.3.1",
+    "eslint-plugin-react": "^7.22.0",
+    "nodemon": "^2.0.6",
+    "prettier": "^2.2.1"
   }
 }
