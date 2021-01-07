@@ -15,7 +15,7 @@ const getCard = (req, res) => {
   const { id } = req.params;
   readJson(path.join(__dirname, '..', 'data', 'cards.json'))
     .then((cards) => {
-      const card = cards.find((card) => card._id === id);
+      const card = cards.find((item) => item._id === id);
       if (!card) {
         res.status(404).send('Card not found');
       }
