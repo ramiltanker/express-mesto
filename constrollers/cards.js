@@ -1,10 +1,9 @@
-const path = require('path');
-const readJson = require('../utils/readJsonFromFile.js');
+const Card = require('../models/card.js');
 
 const getCards = (req, res) => {
-  readJson(path.join(__dirname, '..', 'data', 'cards.json'))
+  Card.find({})
     .then((cards) => {
-      res.send(cards);
+      res.status(200).send(cards);
     })
     .catch((err) => {
       res.status(500).send({ err });
@@ -12,18 +11,57 @@ const getCards = (req, res) => {
 };
 
 const getCard = (req, res) => {
-  const { id } = req.params;
-  readJson(path.join(__dirname, '..', 'data', 'cards.json'))
-    .then((cards) => {
-      const card = cards.find((item) => item._id === id);
+  Card.findById(req.user._id)
+    .then((card) => {
       if (!card) {
-        res.status(404).send('Card not found');
+        res.status(404).send({ message: ' Карточка не найдена, проверьте правильность cardId ' });
       }
-      res.send(card);
+      res.status(200).send(card);
     })
     .catch((err) => {
-      res.status(500).send({ err });
+      res.status(500).send({ message: err.message });
     });
 };
 
-module.exports = { getCards, getCard };
+const postCard = (req, res) => {
+  const { name, link, owner = req.user._id } = req.body;
+  Card.create({ name, link, owner })
+    .then((card) => {
+      res.status(200).send(card);
+    })
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        res.status(400).send({ message: 'Переданы некорректные данные в метод создания карточки' });
+      } else {
+        res.status(500).send({ message: 'Произошла ошибка' });
+      }
+    });
+};
+
+const putLike = (req, res) => {
+  Card.findByIdAndUpdate(req.params.cardId, { $addToSet: { likes: req.user._id } }, {
+    new: true, // обработчик then получит на вход обновлённую запись
+  })
+    .then((card) => {
+      res.status(200).send({ card });
+    })
+    .catch((err) => {
+      res.status(500).send({ message: err.message });
+    });
+};
+
+const deleteLike = (req, res) => {
+  Card.findByIdAndUpdate(req.params.cardId, { $pull: { likes: req.user._id } }, {
+    new: true, // обработчик then получит на вход обновлённую запись
+  })
+    .then((card) => {
+      res.status(200).send({ card });
+    })
+    .catch((err) => {
+      res.status(500).send({ message: err.message });
+    });
+};
+
+module.exports = {
+  getCards, getCard, postCard, putLike, deleteLike,
+};

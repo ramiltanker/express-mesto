@@ -3,6 +3,12 @@ const controller = require('../constrollers/cards.js');
 
 router.get('/', controller.getCards);
 
-router.get('/:id', controller.getCard);
+router.get('/:cardId', controller.getCard);
+
+router.post('/', controller.postCard);
+
+router.put('/:cardId/likes', controller.putLike);
+
+router.delete('/:cardId/likes', controller.deleteLike);
 
 module.exports = router;

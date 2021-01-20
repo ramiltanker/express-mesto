@@ -1,8 +1,14 @@
 const router = require('express').Router();
-const constroller = require('../constrollers/users.js');
+const controller = require('../constrollers/users.js');
 
-router.get('/', constroller.getUsers);
+router.get('/', controller.getUsers);
 
-router.get('/:id', constroller.getUser);
+router.get('/:userId', controller.getUser);
+
+router.post('/', controller.postUser);
+
+router.patch('/me', controller.updateUser);
+
+router.patch('/me/avatar', controller.updateAvatar);
 
 module.exports = router;
