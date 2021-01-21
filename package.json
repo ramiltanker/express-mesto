@@ -1,15 +1,15 @@
 {
   "name": "server",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "project express-mesto",
+  "main": "app.js",
   "scripts": {
     "start": "node app.js",
     "dev": "nodemon app.js",
     "lint": "eslint ./public",
     "lint:fix": "eslint ./public --fix"
   },
-  "author": "",
+  "author": "ramil",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.19.0",

@@ -43,10 +43,18 @@ const putLike = (req, res) => {
     new: true, // обработчик then получит на вход обновлённую запись
   })
     .then((card) => {
-      res.status(200).send({ card });
+      if (!card) {
+        res.status(404).send({ message: 'Такой карточки нет в Базе Данных' });
+      } else {
+        res.status(200).send({ card });
+      }
     })
     .catch((err) => {
-      res.status(500).send({ message: err.message });
+      if (err.name === 'CastError') {
+        res.status(400).send({ message: 'Переданы некорректные данные в метод добавления лайка' });
+      } else {
+        res.status(500).send({ message: err.message });
+      }
     });
 };
 
@@ -55,10 +63,18 @@ const deleteLike = (req, res) => {
     new: true, // обработчик then получит на вход обновлённую запись
   })
     .then((card) => {
-      res.status(200).send({ card });
+      if (!card) {
+        res.status(404).send({ message: 'Такой карточки нет в Базе Данных' });
+      } else {
+        res.status(200).send({ card });
+      }
     })
     .catch((err) => {
-      res.status(500).send({ message: err.message });
+      if (err.name === 'CastError') {
+        res.status(400).send({ message: 'Переданны некоректныеданные в метод удаления лайка ' });
+      } else {
+        res.status(500).send({ message: err.message });
+      }
     });
 };
 
