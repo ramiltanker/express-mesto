@@ -71,7 +71,7 @@ const deleteLike = (req, res) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(400).send({ message: 'Переданны некоректныеданные в метод удаления лайка ' });
+        res.status(400).send({ message: 'Переданны некоректные данные в метод удаления лайка ' });
       } else {
         res.status(500).send({ message: err.message });
       }

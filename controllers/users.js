@@ -19,7 +19,11 @@ const getUser = (req, res) => {
       return res.send(user);
     })
     .catch((err) => {
-      res.status(500).send({ err });
+      if (err.name === 'CastError') {
+        res.status(400).send({ message: 'Переданные некоректные данные в метод получения пользователя' });
+      } else {
+        res.status(500).send({ message: err.message });
+      }
     });
 };
 
@@ -43,13 +47,13 @@ const updateUser = (req, res) => {
   const { name, about } = req.body;
   User.findByIdAndUpdate(req.user._id, { name, about }, {
     runValidators: true, // данные будут валидированы перед изменением
-    upsert: true, // если пользователь не найден, он будет создан
+    new: true,
   })
     .then((user) => {
       res.status(200).send({ user });
     })
     .catch((err) => {
-      if (err.name === 'CastError') {
+      if (err.name === 'ValidationError') {
         res.status(400).send({ message: 'Переданы некорректные данные в метод обновления данных пользователя' });
       } else {
         res.status(500).send({ message: 'Произошла ошибка' });
@@ -61,7 +65,7 @@ const updateAvatar = (req, res) => {
   const { avatar } = req.body;
   User.findByIdAndUpdate(req.user._id, { avatar }, {
     runValidators: true, // данные будут валидированы перед изменением
-    upsert: true, // если пользователь не найден, он будет создан
+    new: true,
   })
     .then((user) => {
       res.status(200).send({ user });
