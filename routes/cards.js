@@ -7,6 +7,8 @@ router.get('/:cardId', controller.getCard);
 
 router.post('/', controller.postCard);
 
+router.delete('/:cardId', controller.deleteCard);
+
 router.put('/:cardId/likes', controller.putLike);
 
 router.delete('/:cardId/likes', controller.deleteLike);

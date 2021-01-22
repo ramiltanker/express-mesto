@@ -38,7 +38,26 @@ const postCard = (req, res) => {
     });
 };
 
+const deleteCard = (req, res) => {
+  Card.findByIdAndRemove(req.params.cardId)
+    .then((card) => {
+      if (!card) {
+        res.status(404).send({ message: 'Такой карточки нет в Базе Данных' });
+      } else {
+        res.status(200).send({ card });
+      }
+    })
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        res.status(400).send({ message: 'Переданы некорректные данные в метод удаления карточки' });
+      } else {
+        res.status(500).send({ message: err.message });
+      }
+    });
+};
+
 const putLike = (req, res) => {
+  console.log(req.params.cardId);
   Card.findByIdAndUpdate(req.params.cardId, { $addToSet: { likes: req.user._id } }, {
     new: true, // обработчик then получит на вход обновлённую запись
   })
@@ -79,5 +98,5 @@ const deleteLike = (req, res) => {
 };
 
 module.exports = {
-  getCards, getCard, postCard, putLike, deleteLike,
+  getCards, getCard, postCard, putLike, deleteLike, deleteCard,
 };

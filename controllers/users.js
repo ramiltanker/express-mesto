@@ -53,6 +53,9 @@ const updateUser = (req, res) => {
       res.status(200).send({ user });
     })
     .catch((err) => {
+      if (err.name === 'CastError') {
+        res.status(400).send({ message: 'Переданы некорректные данные в метод обновления данных пользователя' });
+      }
       if (err.name === 'ValidationError') {
         res.status(400).send({ message: 'Переданы некорректные данные в метод обновления данных пользователя' });
       } else {
