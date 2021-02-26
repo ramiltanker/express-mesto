@@ -14,6 +14,14 @@ const createUser = controllerUser.postUser;
 const app = express();
 const PORT = 3000;
 
+const allowedCors = [
+  'https://api.domainname.students.nomoreparties.space',
+  'https://domainname.students.nomoreparties.space',
+  'http://api.domainname.students.nomoreparties.space',
+  'http://domainname.students.nomoreparties.space',
+  'localhost:3000',
+];
+
 mongoose.connect('mongodb://localhost:27017/mestodb', {
   useNewUrlParser: true,
   useCreateIndex: true,
@@ -25,9 +33,13 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', 'https://domainname.students.nomoreparties.space');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-  res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE');
+  const { origin } = req.headers;
+
+  if (allowedCors.includes(origin)) {
+    res.header('Access-Control-Allow-Origin', origin);
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+    res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE');
+  }
 
   next();
 });
