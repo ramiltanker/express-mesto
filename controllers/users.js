@@ -1,49 +1,62 @@
+const bcrypt = require('bcryptjs');
 const User = require('../models/user.js');
+const NotFoundError = require('../errors/not-found-err.js');
+const BadRequest = require('../errors/bad-request-err.js');
+const InternalServerError = require('../errors/internal-server-err.js');
 
-const getUsers = (req, res) => {
+const getUsers = (req, res, next) => {
   User.find({})
     .then((users) => {
       res.status(200).send(users);
     })
-    .catch(() => {
-      res.status(500).send({ message: 'На сервере произошла ошибка' });
+    .catch((err) => {
+      next(new InternalServerError(`${err.message}`));
     });
 };
 
-const getUser = (req, res) => {
+const getUser = (req, res, next) => {
   User.findById(req.params.userId)
     .then((user) => {
       if (!user) {
-        return res.status(404).send({ message: 'Нет пользователя с таким id' });
+        next(new NotFoundError('Нет пользователя с таким id'));
       }
       return res.send(user);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(400).send({ message: 'Переданные некоректные данные в метод получения пользователя' });
+        next(new BadRequest('Переданные некоректные данные в метод получения пользователя'));
       } else {
-        res.status(500).send({ message: err.message });
+        next(new InternalServerError(`${err.message}`));
       }
     });
 };
 
-const postUser = (req, res) => {
-  const { name, about, avatar } = req.body;
+const postUser = (req, res, next) => {
+  const {
+    name, about, avatar, email, password,
+  } = req.body;
 
-  User.create({ name, about, avatar })
+  bcrypt.hash(password, 10)
+    .then((hash) => User.create({
+      email,
+      password: hash,
+      name,
+      about,
+      avatar,
+    }))
     .then((user) => {
-      res.status(200).send(user);
+      res.status(200).send({ message: `Пользователь ${user.email} успешно зарегистрирован` });
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Переданы некорректные данные в метод создания пользователя' });
+        next(new BadRequest('Переданы некорректные данные в метод создания пользователя'));
       } else {
-        res.status(500).send({ message: 'Произошла ошибка' });
+        next(new InternalServerError(`${err.message}`));
       }
     });
 };
 
-const updateUser = (req, res) => {
+const updateUser = (req, res, next) => {
   const { name, about } = req.body;
   User.findByIdAndUpdate(req.user._id, { name, about }, {
     runValidators: true, // данные будут валидированы перед изменением
@@ -54,17 +67,17 @@ const updateUser = (req, res) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(400).send({ message: 'Переданы некорректные данные в метод обновления данных пользователя' });
+        next(new BadRequest('Переданы некорректные данные в метод обновления данных пользователя'));
       }
       if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Переданы некорректные данные в метод обновления данных пользователя' });
+        next(new BadRequest('Переданы некорректные данные в метод обновления данных пользователя'));
       } else {
-        res.status(500).send({ message: 'Произошла ошибка' });
+        next(new InternalServerError(`${err.message}`));
       }
     });
 };
 
-const updateAvatar = (req, res) => {
+const updateAvatar = (req, res, next) => {
   const { avatar } = req.body;
   User.findByIdAndUpdate(req.user._id, { avatar }, {
     runValidators: true, // данные будут валидированы перед изменением
@@ -75,13 +88,24 @@ const updateAvatar = (req, res) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Переданы некорректные данные в метод обновления аватара пользователя' });
+        next(new BadRequest('Переданы некорректные данные в метод обновления аватара пользователя'));
       } else {
-        res.status(500).send({ message: 'Произошла ошибка' });
+        next(new InternalServerError(`${err.message}`));
       }
     });
 };
 
+const getCurrentUser = (req, res, next) => {
+  User.findById(req.user._id)
+    .then((user) => {
+      if (!user) {
+        throw new NotFoundError('Нет пользователя с таким id');
+      }
+      return res.send(user);
+    })
+    .catch(next);
+};
+
 module.exports = {
-  getUsers, getUser, postUser, updateUser, updateAvatar,
+  getUsers, getUser, postUser, updateUser, updateAvatar, getCurrentUser,
 };
