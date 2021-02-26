@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 const { celebrate, Joi } = require('celebrate');
 const mongoose = require('mongoose');
 const router = require('./routes/index.js');
@@ -14,13 +15,13 @@ const createUser = controllerUser.postUser;
 const app = express();
 const PORT = 3000;
 
-const allowedCors = [
-  'https://api.domainname.students.nomoreparties.space',
-  'https://domainname.students.nomoreparties.space',
-  'http://api.domainname.students.nomoreparties.space',
-  'http://domainname.students.nomoreparties.space',
-  'localhost:3000',
-];
+// const allowedCors = [
+//   'https://api.domainname.students.nomoreparties.space',
+//   'https://domainname.students.nomoreparties.space',
+//   'http://api.domainname.students.nomoreparties.space',
+//   'http://domainname.students.nomoreparties.space',
+//   'localhost:3000',
+// ];
 
 mongoose.connect('mongodb://localhost:27017/mestodb', {
   useNewUrlParser: true,
@@ -29,20 +30,22 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
   useUnifiedTopology: true,
 });
 
+app.use(cors());
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use((req, res, next) => {
-  const { origin } = req.headers;
+// app.use((req, res, next) => {
+//   const { origin } = req.headers;
 
-  if (allowedCors.includes(origin)) {
-    res.header('Access-Control-Allow-Origin', origin);
-    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-    res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE');
-  }
+//   if (allowedCors.includes(origin)) {
+//     res.header('Access-Control-Allow-Origin', origin);
+//     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+//     res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE');
+//   }
 
-  next();
-});
+//   next();
+// });
 
 app.use(requestLogger);
 
