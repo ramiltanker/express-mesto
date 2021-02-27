@@ -2,9 +2,9 @@ require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const { celebrate, Joi } = require('celebrate');
+// const { celebrate, Joi } = require('celebrate');
 const mongoose = require('mongoose');
-const router = require('./routes/index.js');
+// const router = require('./routes/index.js');
 const login = require('./controllers/login.js');
 const auth = require('./middlewares/auth.js');
 const controllerUser = require('./controllers/users.js');
@@ -13,7 +13,7 @@ const { requestLogger, errorLogger } = require('./middlewares/logger');
 const createUser = controllerUser.postUser;
 
 const app = express();
-const PORT = 3000;
+const PORT = 3001;
 
 // const allowedCors = [
 //   'https://api.domainname.students.nomoreparties.space',
@@ -50,21 +50,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(requestLogger);
 
 // Не нужна авторизация
-app.post('/signin', celebrate({
-  body: Joi.object().keys({
-    email: Joi.string().required(),
-    password: Joi.string().required(),
-  }),
-}),
-login);
+app.post('/signin', login);
 
-app.post('/signup', celebrate({
-  body: Joi.object().keys({
-    email: Joi.string().required(),
-    password: Joi.string().required(),
-  }),
-}),
-createUser);
+app.post('/signup', createUser);
 // Не нужна авторизация
 
 // Авторизация
@@ -72,7 +60,8 @@ app.use(auth);
 // Авторизация
 
 // Роуты которым нужна авторизация
-app.use('/', router);
+app.use('/cards', require('./routes/cards'));
+app.use('/users', require('./routes/users'));
 // Роуты которым нужна авторизация
 
 app.use(errorLogger);
