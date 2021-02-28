@@ -45,7 +45,7 @@ const postUser = (req, res, next) => {
       avatar,
     }))
     .then((user) => {
-      res.status(200).send({ message: `Пользователь ${user.email} успешно зарегистрирован` });
+      res.status(200).send({ data: { _id: user._id, email: user.email } });
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
@@ -63,7 +63,7 @@ const updateUser = (req, res, next) => {
     new: true,
   })
     .then((user) => {
-      res.status(200).send({ user });
+      res.status(200).send(user);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
@@ -84,7 +84,7 @@ const updateAvatar = (req, res, next) => {
     new: true,
   })
     .then((user) => {
-      res.status(200).send({ user });
+      res.status(200).send(user);
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
@@ -101,7 +101,7 @@ const getCurrentUser = (req, res, next) => {
       if (!user) {
         throw new NotFoundError('Нет пользователя с таким id');
       }
-      return res.send(user);
+      res.send(user);
     })
     .catch(next);
 };

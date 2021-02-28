@@ -28,6 +28,7 @@ const getCard = (req, res, next) => {
 };
 
 const postCard = (req, res, next) => {
+  console.log(req);
   const { name, link, owner = req.user._id } = req.body;
   Card.create({ name, link, owner })
     .then((card) => {
