@@ -63,7 +63,7 @@ const updateUser = (req, res, next) => {
     new: true,
   })
     .then((user) => {
-      res.status(200).send(user);
+      res.status(200).send({ user });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
