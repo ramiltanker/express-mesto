@@ -14,9 +14,9 @@ controller.postCard);
 
 router.delete('/:cardId', controller.deleteCard);
 
-router.put('/:cardId/likes', controller.putLike);
+router.put('/likes/:cardId', controller.putLike);
 
-router.delete('/:cardId/likes', controller.deleteLike);
+router.delete('/likes/:cardId', controller.deleteLike);
 
 router.get('/:cardId', controller.getCard);
 

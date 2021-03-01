@@ -44,13 +44,9 @@ app.post('/signup', celebrate({
 }), createUser);
 // Не нужна авторизация
 
-// Авторизация
-app.use(auth);
-// Авторизация
-
 // Роуты которым нужна авторизация
-app.use('/cards', require('./routes/cards'));
-app.use('/users', require('./routes/users'));
+app.use('/cards', auth, require('./routes/cards'));
+app.use('/users', auth, require('./routes/users'));
 // Роуты которым нужна авторизация
 
 app.use(errorLogger);

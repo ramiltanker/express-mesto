@@ -45,9 +45,10 @@ const postCard = (req, res, next) => {
 const deleteCard = (req, res, next) => {
   Card.findById(req.params.cardId)
     .then((card) => {
+      console.log(req.user._id);
       if (!card) {
         next(new NotFoundError('Такой карточки нет в Базе Данных'));
-      } else if (!(Card.owner === req.user._id)) {
+      } else if (!(Card.owner !== req.user._id)) {
         next(new BadRequest('Нельзя удалить карточку другого пользователя'));
       } else {
         Card.findByIdAndRemove(req.params.cardId)
@@ -73,7 +74,7 @@ const putLike = (req, res, next) => {
       if (!card) {
         next(new NotFoundError('Такой карточки нет в Базе Данных'));
       } else {
-        res.status(200).send({ card });
+        res.status(200).send(card);
       }
     })
     .catch((err) => {
@@ -93,7 +94,7 @@ const deleteLike = (req, res, next) => {
       if (!card) {
         next(new NotFoundError('Такой карточки нет в Базе Данных'));
       } else {
-        res.status(200).send({ card });
+        res.status(200).send(card);
       }
     })
     .catch((err) => {
