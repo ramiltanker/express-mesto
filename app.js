@@ -8,6 +8,7 @@ const login = require('./controllers/login.js');
 const auth = require('./middlewares/auth.js');
 const controllerUser = require('./controllers/users.js');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
+const NotFoundError = require('./errors/not-found-err.js');
 
 const createUser = controllerUser.postUser;
 
@@ -50,6 +51,10 @@ app.use('/users', auth, require('./routes/users'));
 // Роуты которым нужна авторизация
 
 app.use(errorLogger);
+
+app.use((req, res, next) => {
+  next(new NotFoundError('Запрашиваемый ресурс не найден'));
+});
 
 app.use((err, req, res, next) => {
   // если у ошибки нет статуса, выставляем 500
