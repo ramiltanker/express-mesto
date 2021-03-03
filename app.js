@@ -13,7 +13,7 @@ const NotFoundError = require('./errors/not-found-err.js');
 const createUser = controllerUser.postUser;
 
 const app = express();
-const PORT = 3000;
+const PORT = 3001;
 
 mongoose.connect('mongodb://localhost:27017/mestodb', {
   useNewUrlParser: true,

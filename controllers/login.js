@@ -12,7 +12,5 @@ module.exports = (req, res, next) => {
       req.headers.authorization = `Bearer ${token}`;
       res.send({ token });
     })
-    .catch((err) => {
-      next(new BadRequest(`${err.message}`));
-    });
+    .catch(next);
 };

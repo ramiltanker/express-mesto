@@ -3,6 +3,7 @@ const User = require('../models/user.js');
 const NotFoundError = require('../errors/not-found-err.js');
 const BadRequest = require('../errors/bad-request-err.js');
 const InternalServerError = require('../errors/internal-server-err.js');
+const ConflictError = require('../errors/conflict-err.js');
 
 const getUsers = (req, res, next) => {
   User.find({})
@@ -49,11 +50,14 @@ const postUser = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        next(new BadRequest('Переданы некорректные данные в метод создания пользователя'));
+        throw new BadRequest('Переданы некорректные данные в метод создания пользователя');
+      } else if (err.name === 'MongoError') {
+        throw new ConflictError('Пользователь с таким email уже зарегестрирован');
       } else {
-        next(new InternalServerError(`${err.message}`));
+        throw new InternalServerError(`${err.message}`);
       }
-    });
+    })
+    .catch(next);
 };
 
 const updateUser = (req, res, next) => {
