@@ -49,7 +49,6 @@ const postUser = (req, res, next) => {
       res.status(200).send({ data: { _id: user._id, email: user.email } });
     })
     .catch((err) => {
-      console.log(err.name);
       if (err.name === 'ValidationError') {
         throw new BadRequest('Переданы некорректные данные в метод создания пользователя');
       } else if (err.name === 'MongoError') {

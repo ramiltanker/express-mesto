@@ -3,6 +3,7 @@ const Card = require('../models/card.js');
 const NotFoundError = require('../errors/not-found-err.js');
 const BadRequest = require('../errors/bad-request-err.js');
 const InternalServerError = require('../errors/internal-server-err.js');
+const OwnerError = require('../errors/owner-err.js');
 
 const getCards = (req, res, next) => {
   Card.find({})
@@ -45,11 +46,10 @@ const postCard = (req, res, next) => {
 const deleteCard = (req, res, next) => {
   Card.findById(req.params.cardId)
     .then((card) => {
-      console.log(req.user._id);
       if (!card) {
         next(new NotFoundError('Такой карточки нет в Базе Данных'));
       } else if (!(Card.owner !== req.user._id)) {
-        next(new BadRequest('Нельзя удалить карточку другого пользователя'));
+        next(new OwnerError('Нельзя удалить карточку другого пользователя'));
       } else {
         Card.findByIdAndRemove(req.params.cardId)
           .then(() => {
