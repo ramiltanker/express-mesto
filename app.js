@@ -1,9 +1,9 @@
 require('dotenv').config();
 const express = require('express');
+const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const { celebrate, Joi, isCelebrateError } = require('celebrate');
-const mongoose = require('mongoose');
 const login = require('./controllers/login.js');
 const auth = require('./middlewares/auth.js');
 const controllerUser = require('./controllers/users.js');
